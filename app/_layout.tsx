@@ -7,7 +7,6 @@ import { useColorScheme } from 'nativewind';
 import { OverlayProvider } from '@/contexts/overlayContext';
 import { AlertHost } from '@/components/molecule/alertDialog';
 import { ToastHost } from '@/components/molecule/toast';
-import { ModalHost } from '@/components/molecule/modal';
 import { Slot } from 'expo-router';
 
 export { ErrorBoundary } from 'expo-router';
@@ -22,7 +21,6 @@ export default function RootLayout() {
         <PortalHost />
         <AlertHost />
         <ToastHost />
-        <ModalHost />
       </OverlayProvider>
     </ThemeProvider>
   );

@@ -1,5 +1,4 @@
 import {
-  BottomSheet,
   Card,
   CardContent,
   CardDescription,
@@ -129,43 +128,6 @@ export default function MoleculeDemo() {
           <Button onPress={() => showToast({ message: 'Something went wrong', variant: 'error' })}>
             <Text>Show Error Toast</Text>
           </Button>
-        </View>
-
-        <Divider className="my-4" />
-
-        <Text variant="h2">Modal</Text>
-        <View className="my-2">
-          <Button
-            onPress={() =>
-              showModal({
-                dismissOnBackdrop: true,
-                content: (
-                  <View className="gap-3">
-                    <Text variant="h3">Demo Modal</Text>
-                    <Text>This is a simple modal body.</Text>
-                    <Button onPress={hideModal}>
-                      <Text>Close</Text>
-                    </Button>
-                  </View>
-                ),
-              })
-            }
-          >
-            <Text>Show Modal</Text>
-          </Button>
-        </View>
-
-        <Divider className="my-4" />
-
-        <Text variant="h2">BottomSheet</Text>
-        <View className="my-2">
-          <Button onPress={() => setSheetVisible(true)}>
-            <Text>Show Bottom Sheet</Text>
-          </Button>
-          <BottomSheet visible={isSheetVisible} onClose={() => setSheetVisible(false)}>
-            <Text variant="h3">Bottom Sheet</Text>
-            <Text>This is a bottom sheet. You can put any content here.</Text>
-          </BottomSheet>
         </View>
 
         <Divider className="my-4" />

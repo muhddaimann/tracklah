@@ -9,20 +9,19 @@ type ToastVariant = 'default' | 'success' | 'error' | 'info';
 function ToastIcon({ variant }: { variant?: ToastVariant }) {
   switch (variant) {
     case 'success':
-      return <CheckCircle2 size={18} className="text-white" />;
+      return <CheckCircle2 size={18} className="text-emerald-500" />;
     case 'error':
-      return <AlertCircle size={18} className="text-white" />;
+      return <AlertCircle size={18} className="text-rose-500" />;
     case 'info':
-      return <Info size={18} className="text-white" />;
+      return <Info size={18} className="text-blue-500" />;
     default:
-      return <Info size={18} className="text-foreground" />;
+      return <Info size={18} className="text-primary" />;
   }
 }
 
-function useToastAnimation(duration = 3500) {
+function useToastAnimation() {
   const opacity = React.useRef(new Animated.Value(0)).current;
   const translate = React.useRef(new Animated.Value(-12)).current;
-  const progress = React.useRef(new Animated.Value(1)).current;
 
   const inAnim = React.useCallback(() => {
     Animated.parallel([
@@ -61,16 +60,7 @@ function useToastAnimation(duration = 3500) {
     [opacity, translate]
   );
 
-  const startProgress = React.useCallback(() => {
-    Animated.timing(progress, {
-      toValue: 0,
-      duration,
-      easing: Easing.linear,
-      useNativeDriver: false,
-    }).start();
-  }, [progress, duration]);
-
-  return { opacity, translate, progress, inAnim, outAnim, startProgress };
+  return { opacity, translate, inAnim, outAnim };
 }
 
 function ToastItem({
@@ -86,58 +76,49 @@ function ToastItem({
   onClose: (id: string) => void;
   duration?: number;
 }) {
-  const { opacity, translate, progress, inAnim, outAnim, startProgress } =
-    useToastAnimation(duration);
+  const { opacity, translate, inAnim, outAnim } = useToastAnimation();
 
   React.useEffect(() => {
     inAnim();
-    startProgress();
     const t = setTimeout(() => outAnim(() => onClose(id)), duration);
     return () => clearTimeout(t);
-  }, [id, duration, inAnim, outAnim, startProgress, onClose]);
-
-  const barWidth = progress.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] });
-
-  const isColored = variant === 'success' || variant === 'error' || variant === 'info';
+  }, [id, duration, inAnim, outAnim, onClose]);
 
   return (
-    <Animated.View
-      style={{ opacity, transform: [{ translateY: translate }] }}
-      className={cn(
-        'w-11/12 max-w-md overflow-hidden rounded-xl border p-3 shadow-lg',
-        'flex-row items-center',
-        variant === 'success' && 'border-emerald-700 bg-emerald-600',
-        variant === 'error' && 'border-rose-700 bg-rose-600',
-        variant === 'info' && 'border-blue-700 bg-blue-600',
-        (!variant || variant === 'default') && 'border-border bg-card'
-      )}>
-      <View className="mr-3">
-        <ToastIcon variant={(variant as ToastVariant) ?? 'default'} />
-      </View>
+    <Animated.View style={{ opacity, transform: [{ translateY: translate }] }}>
+      <View
+        className={cn(
+          'w-full max-w-sm overflow-hidden rounded-lg border bg-card shadow-lg transition-all hover:shadow-xl',
+          'flex-row',
+          variant === 'success' && 'border-emerald-500',
+          variant === 'error' && 'border-rose-500',
+          variant === 'info' && 'border-blue-500'
+        )}>
+        <View
+          className={cn(
+            'w-1.5',
+            variant === 'success' && 'bg-emerald-500',
+            variant === 'error' && 'bg-rose-500',
+            variant === 'info' && 'bg-blue-500',
+            (!variant || variant === 'default') && 'bg-primary'
+          )}
+        />
+        <View className="p-3">
+          <ToastIcon variant={variant} />
+        </View>
 
-      <View className="flex-1">
-        <Text className={cn('text-sm', isColored ? 'text-white' : 'text-foreground')}>
-          {message}
-        </Text>
-        <View className="mt-2 h-1 w-full rounded-full bg-black/10">
-          <Animated.View
-            style={{ width: barWidth }}
-            className={cn(
-              'h-1 rounded-full',
-              variant === 'success' && 'bg-white/70',
-              variant === 'error' && 'bg-white/70',
-              variant === 'info' && 'bg-white/70',
-              (!variant || variant === 'default') && 'bg-primary/60'
-            )}
-          />
+        <View className="flex-1 py-3 pr-3">
+          <Text className="text-sm font-medium text-foreground">{message}</Text>
+        </View>
+
+        <View className="py-2 pr-2">
+          <Pressable
+            onPress={() => outAnim(() => onClose(id))}
+            className="rounded-md p-1.5 opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-1 focus-visible:ring-ring active:opacity-70">
+            <X size={16} className="text-foreground" />
+          </Pressable>
         </View>
       </View>
-
-      <Pressable
-        onPress={() => outAnim(() => onClose(id))}
-        className="ml-3 rounded-md p-1.5 active:opacity-70">
-        <X size={16} className={cn(isColored ? 'text-white' : 'text-foreground')} />
-      </Pressable>
     </Animated.View>
   );
 }
@@ -147,14 +128,14 @@ export function ToastHost() {
   if (!toasts.length) return null;
 
   return (
-    <View className="pointer-events-none absolute left-0 right-0 bottom-5 items-center px-4">
-      <View className="pointer-events-auto w-full items-center gap-2">
-        {toasts.map((t) => (
+    <View className="pointer-events-none absolute inset-0 z-50 items-end justify-end p-4">
+      <View className="pointer-events-auto w-full max-w-sm gap-2">
+        {[...toasts].reverse().map((t) => (
           <ToastItem
             key={t.id}
             id={t.id}
             message={t.message}
-            variant={t.variant as ToastVariant}
+            variant={t.variant}
             onClose={hideToast}
           />
         ))}
