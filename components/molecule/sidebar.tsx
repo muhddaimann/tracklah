@@ -7,10 +7,14 @@ import { cn } from '@/lib/utils';
 import { useSidebarContext } from '@/contexts/sidebarContext';
 import { useColorScheme } from 'nativewind';
 
+const normalizePath = (p: string) => p.replace(/\/\([^)]*\)\//g, '/').replace(/\/+$/, '') || '/';
+
 function NavItem({ href, label, Icon }: { href: LinkProps['href']; label: string; Icon: any }) {
   const pathname = usePathname();
-  const target = typeof href === 'string' ? href : ((href as any)?.pathname ?? '');
-  const active = pathname === target;
+  const current = normalizePath(pathname);
+  const targetRaw = typeof href === 'string' ? href : ((href as any)?.pathname ?? '');
+  const target = normalizePath(targetRaw);
+  const active = current === target;
   const { isCollapsed } = useSidebarContext();
 
   return (
@@ -18,16 +22,31 @@ function NavItem({ href, label, Icon }: { href: LinkProps['href']; label: string
       <Pressable
         accessibilityRole="button"
         className={cn(
-          'mx-2 my-1 flex-row items-center rounded-lg px-2 py-2 outline-none',
-          active ? 'bg-accent' : 'bg-transparent',
+          'relative my-1 rounded-lg outline-none transition-colors duration-150',
+          isCollapsed
+            ? cn(
+                'mx-1 h-9 items-center justify-center px-0',
+                active ? 'bg-primary/15 dark:bg-primary/25' : 'hover:bg-muted/50'
+              )
+            : cn(
+                'mx-2 flex-row items-center px-2 py-2',
+                active ? 'bg-primary/15 dark:bg-primary/25' : 'hover:bg-muted/50'
+              ),
           'focus-visible:ring-2 focus-visible:ring-ring'
-        )}
-      >
-        <Icon size={18} className={cn(active ? 'text-accent-foreground' : 'text-muted-foreground')} />
+        )}>
         {!isCollapsed && (
-          <Text className={cn('ml-3', active ? 'text-accent-foreground' : 'text-foreground')}>
-            {label}
-          </Text>
+          <View
+            className={cn(
+              'absolute left-0 h-5 w-1.5 rounded-r',
+              active ? 'bg-primary' : 'bg-transparent'
+            )}
+          />
+        )}
+
+        <Icon size={18} className={cn(active ? 'text-primary' : 'text-muted-foreground')} />
+
+        {!isCollapsed && (
+          <Text className={cn('ml-3', active ? 'text-primary' : 'text-foreground')}>{label}</Text>
         )}
       </Pressable>
     </Link>
@@ -40,7 +59,11 @@ export function Sidebar() {
   const width = React.useRef(new Animated.Value(isCollapsed ? 80 : 256)).current;
 
   React.useEffect(() => {
-    Animated.timing(width, { toValue: isCollapsed ? 80 : 256, duration: 180, useNativeDriver: false }).start();
+    Animated.timing(width, {
+      toValue: isCollapsed ? 80 : 256,
+      duration: 180,
+      useNativeDriver: false,
+    }).start();
   }, [isCollapsed]);
 
   const toggleTheme = () => setColorScheme(colorScheme === 'dark' ? 'light' : 'dark');
@@ -48,24 +71,26 @@ export function Sidebar() {
   return (
     <Animated.View style={{ width }}>
       <View className="h-full border-r border-border bg-background">
-        <View className="flex-row items-center justify-between px-3 py-3">
-          {!isCollapsed ? (
-            <Text className="text-base font-semibold text-foreground">Design Toolkit</Text>
-          ) : (
-            <Text className="text-base font-semibold text-primary">Dt</Text>
-          )}
-          <Pressable
-            onPress={toggleSidebar}
-            className="rounded-md p-2 focus-visible:ring-2 focus-visible:ring-ring active:opacity-80"
-            accessibilityLabel={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            {isCollapsed ? (
+        {isCollapsed ? (
+          <View className="items-center px-2 py-3">
+            <Pressable
+              onPress={toggleSidebar}
+              className="rounded-md p-2 focus-visible:ring-2 focus-visible:ring-ring active:opacity-80"
+              accessibilityLabel="Expand sidebar">
               <ChevronRight size={16} className="text-foreground" />
-            ) : (
+            </Pressable>
+          </View>
+        ) : (
+          <View className="flex-row items-center justify-between px-3 py-3">
+            <Text className="text-base font-semibold text-foreground">Design Toolkit</Text>
+            <Pressable
+              onPress={toggleSidebar}
+              className="rounded-md p-2 focus-visible:ring-2 focus-visible:ring-ring active:opacity-80"
+              accessibilityLabel="Collapse sidebar">
               <ChevronLeft size={16} className="text-foreground" />
-            )}
-          </Pressable>
-        </View>
+            </Pressable>
+          </View>
+        )}
 
         <View className="mx-3 h-px bg-border" />
 
@@ -74,27 +99,27 @@ export function Sidebar() {
           <NavItem href="/(tabs)/b" label="Components" Icon={Layers} />
         </View>
 
-        <View className="mt-auto gap-2 p-3">
+        <View className={cn('mt-auto gap-2 p-3', isCollapsed && 'items-center')}>
           <Pressable
             onPress={toggleTheme}
             className={cn(
-              'flex-row items-center rounded-lg border px-3 py-2 outline-none active:opacity-80',
+              'rounded-lg border outline-none focus-visible:ring-2 focus-visible:ring-ring active:opacity-80',
               'border-border',
               colorScheme === 'dark' ? 'bg-input/30' : 'bg-accent/20',
-              isCollapsed && 'justify-center px-2',
-              'focus-visible:ring-2 focus-visible:ring-ring'
+              isCollapsed
+                ? 'h-9 w-9 items-center justify-center'
+                : 'flex-row items-center px-3 py-2'
             )}
-            accessibilityLabel="Toggle theme"
-          >
+            accessibilityLabel="Toggle theme">
             {colorScheme === 'dark' ? (
-              <>
-                <Moon size={16} className="text-foreground" />
-                {!isCollapsed && <Text className="ml-2 text-sm text-foreground">Dark</Text>}
-              </>
-            ) : (
               <>
                 <Sun size={16} className="text-foreground" />
                 {!isCollapsed && <Text className="ml-2 text-sm text-foreground">Light</Text>}
+              </>
+            ) : (
+              <>
+                <Moon size={16} className="text-foreground" />
+                {!isCollapsed && <Text className="ml-2 text-sm text-foreground">Dark</Text>}
               </>
             )}
           </Pressable>
