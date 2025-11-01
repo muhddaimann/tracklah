@@ -20,8 +20,7 @@ import { useOverlay } from '@/hooks/useOverlay';
 
 export default function MoleculeDemo() {
   const [activeTab, setActiveTab] = React.useState('Home');
-  const [isSheetVisible, setSheetVisible] = React.useState(false);
-  const { showAlert, showToast, showModal, hideModal } = useOverlay();
+  const { showAlert, showToast } = useOverlay();
 
   return (
     <ScrollView contentContainerClassName="p-6 bg-background">
@@ -113,7 +112,8 @@ export default function MoleculeDemo() {
 
         <Text variant="h2">AlertDialog</Text>
         <View className="my-2">
-          <Button onPress={() => showAlert({ title: 'Alert', message: 'This is an alert dialog.' })}>
+          <Button
+            onPress={() => showAlert({ title: 'Alert', message: 'This is an alert dialog.' })}>
             <Text>Show Alert</Text>
           </Button>
         </View>

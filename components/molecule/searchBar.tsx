@@ -1,28 +1,37 @@
-
 import { cn } from '@/lib/utils';
 import { Search } from 'lucide-react-native';
 import * as React from 'react';
 import { View } from 'react-native';
 import { Icon, Input } from '../atom';
 
-const SearchBar = React.forwardRef<
-  React.ElementRef<typeof Input>,
-  React.ComponentPropsWithoutRef<typeof Input>
->(({ className, ...props }, ref) => {
-  return (
-    <View className="relative w-full">
-      <Icon
-        as={Search}
-        className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground"
-      />
-      <Input
-        ref={ref}
-        className={cn('pl-10', className)}
-        {...props}
-      />
-    </View>
-  );
-});
+type SearchBarProps = React.ComponentPropsWithoutRef<typeof Input>;
+
+const SearchBar = React.forwardRef<React.ElementRef<typeof Input>, SearchBarProps>(
+  ({ className, placeholder = 'Search…', ...props }, ref) => {
+    return (
+      <View className="relative w-full">
+        <View
+          pointerEvents="none"
+          className="absolute inset-y-0 left-3 z-10 flex justify-center"
+        >
+          <Icon as={Search} className="h-5 w-5 text-muted-foreground" />
+        </View>
+
+        <Input
+          ref={ref}
+          accessibilityRole="search"
+          accessibilityLabel="Search"
+          placeholder={placeholder}
+          autoCapitalize="none"
+          returnKeyType="search"
+          className={cn('pl-11', className)}
+          // if your Input doesn't have a fixed height, uncomment next line:
+          // className={cn('h-10 pl-11', className)}
+        />
+      </View>
+    );
+  }
+);
 SearchBar.displayName = 'SearchBar';
 
 export { SearchBar };

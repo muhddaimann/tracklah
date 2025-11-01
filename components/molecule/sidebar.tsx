@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Pressable, Animated } from 'react-native';
 import { Link, usePathname, type LinkProps } from 'expo-router';
-import { Home, Layers, ChevronLeft, ChevronRight, Sun, Moon } from 'lucide-react-native';
+import { Home, ChevronLeft, ChevronRight, Sun, Moon, Code2, CodeIcon } from 'lucide-react-native';
 import { Text } from '@/components/atom';
 import { cn } from '@/lib/utils';
 import { useSidebarContext } from '@/contexts/sidebarContext';
@@ -60,7 +60,7 @@ export function Sidebar() {
 
   React.useEffect(() => {
     Animated.timing(width, {
-      toValue: isCollapsed ? 80 : 256,
+      toValue: isCollapsed ? 80 : 200,
       duration: 180,
       useNativeDriver: false,
     }).start();
@@ -82,7 +82,7 @@ export function Sidebar() {
           </View>
         ) : (
           <View className="flex-row items-center justify-between px-3 py-3">
-            <Text className="text-base font-semibold text-foreground">Design Toolkit</Text>
+            <Text className="text-base font-semibold text-foreground">TrackLah</Text>
             <Pressable
               onPress={toggleSidebar}
               className="rounded-md p-2 focus-visible:ring-2 focus-visible:ring-ring active:opacity-80"
@@ -95,8 +95,9 @@ export function Sidebar() {
         <View className="mx-3 h-px bg-border" />
 
         <View className="mt-1">
-          <NavItem href="/(tabs)/a" label="Home" Icon={Home} />
-          <NavItem href="/(tabs)/b" label="Components" Icon={Layers} />
+          <NavItem href="/sidebar/a" label="Home" Icon={Home} />
+          <NavItem href="/sidebar/b" label="Atom" Icon={Code2} />
+          <NavItem href="/sidebar/c" label="Molecule" Icon={CodeIcon} />
         </View>
 
         <View className={cn('mt-auto gap-2 p-3', isCollapsed && 'items-center')}>

@@ -1,48 +1,58 @@
-dt/
+tracklah/
 ├─ app/
-│  ├─ (tabs)/
+│  ├─ sidebar/
 │  │  ├─ a/
 │  │  │  ├─ _layout.tsx
+│  │  │  └─ index.tsx
 │  │  ├─ b/
 │  │  │  ├─ _layout.tsx
+│  │  │  └─ index.tsx
+│  │  ├─ c/
+│  │  │  ├─ _layout.tsx
+│  │  │  └─ index.tsx
+│  │  ├─ d/
+│  │  │  ├─ _layout.tsx
+│  │  │  └─ index.tsx
 │  │  └─ _layout.tsx
 │  ├─ _layout.tsx
 │  └─ index.tsx
 ├─ assets/
-│  └─ images/
 ├─ components/
 │  ├─ atom/
-│  │  ├─ button.tsx
-│  │  ├─ icon.tsx
-│  │  ├─ text.tsx
 │  │  ├─ avatar.tsx
 │  │  ├─ badge.tsx
-│  │  ├─ chip.tsx
-│  │  ├─ input.tsx
-│  │  ├─ divider.tsx
-│  │  ├─ spinner.tsx
+│  │  ├─ button.tsx
 │  │  ├─ checkbox.tsx
-│  │  └─ index.tsx
+│  │  ├─ chip.tsx
+│  │  ├─ divider.tsx
+│  │  ├─ icon.tsx
+│  │  ├─ index.ts
+│  │  ├─ input.tsx
+│  │  ├─ spinner.tsx
+│  │  └─ text.tsx
 │  └─ molecule/
-│     ├─ card.tsx
-│     ├─ listItem.tsx
-│     ├─ modal.tsx
 │     ├─ alertDialog.tsx
-│     ├─ toast.tsx
+│     ├─ card.tsx
 │     ├─ formField.tsx
-│     ├─ searchBar.tsx
-│     ├─ toolbar.tsx
-│     ├─ tabBar.tsx
-│     ├─ bottomSheet.tsx
+│     ├─ index.ts
+│     ├─ listItem.tsx
 │     ├─ progressSection.tsx
-│     └─ index.ts
+│     ├─ searchBar.tsx
+│     ├─ sidebar.tsx
+│     ├─ tabBar.tsx
+│     ├─ toast.tsx
+│     └─ toolbar.tsx
 ├─ contexts/
-│  └─ overlayContext.tsx
+│  ├─ overlayContext.tsx
+│  └─ sidebarContext.tsx
 ├─ hooks/
-│  └─ useOverlay.tsx
+│  ├─ useOverlay.tsx
+│  ├─ useProject.tsx
+│  └─ useSidebar.tsx
 ├─ lib/
 │  ├─ theme.ts
 │  ├─ token.ts
+│  ├─ types.ts
 │  └─ utils.ts
 ├─ .gitignore
 ├─ .prettierrc
@@ -58,6 +68,7 @@ dt/
 ├─ README.md
 ├─ tailwind.config.js
 └─ tsconfig.json
+
 
 TrackLah/
 ├─ what/
@@ -102,3 +113,72 @@ TrackLah/
 ├─ rituals/
 │ ├─ daily: check Today, drag board
 │ └─ weekly: Review page, archive done, plan next week
+
+
+Projects/
+├─ Faith Mobile (internal staffing super-app)
+│ ├─ Status: Active (UI/UX polish + balance API refactor)
+│ ├─ Modules: Attendance • Leave • Overtime • Claims • Room Booking • Newsflash • Profile
+│ ├─ Frontend: Expo React Native (TS), React Native Paper, custom design tokens
+│ ├─ Backend: PHP (JWT auth), MySQL; routes: leave/balance, claims, auth
+│ ├─ Recent: Date/Duration/DateTime modals, LeaveForm loading skeletons, status-based theming, ClaimModa/
+│ └─ Next: finalize balanceController parity with legacy logic • integrate useClaimStore • OCR + file size validations
+├─ Leave Balance API Refactor (PHP)
+│ ├─ Status: Ongoing (exact parity with legacy)
+│ ├─ Files: balanceController.php • balanceRoute.php • authMiddleware (JWT)
+│ ├─ Logic: carry-forward cutoff • monthly deduction • replacement leave • 13 leave types
+│ └─ Next: finalize GET “all balances” • embed helpers in controller • unit tests
+├─ Laive (voice assistant / interview)
+│ ├─ Status: 🚧 active (Phase 2–3 largely done; polish ongoing)
+│ ├─ Frontend (web, Expo RN Web): RealtimeClient (custom TS), WavRecorder/WavStreamPlayer, canvas waveform, contexts (voice/chat/log/theme)
+│ ├─ Features: auto-VAD, greeting on start, tool calls (query_db→RAG), cost estimation, scoring, results/report
+│ ├─ Variants: Console (debug) • Demo (card UI: Chat/Action/Icon/Document)
+│ └─ Next: tool handling polish • RAG wiring • UI animations for voice states
+├─ Realtime AI Assistant (react01 / test05 / Home screen rebuild)
+│ ├─ Status: ✅ core setup; 🚧 integrating console → demo flow
+│ ├─ Stack: Expo RN Web, TS, custom RealtimeClient, hooks (useRecorder/useStreaming/useWaveform/useClientEvents)
+│ └─ Next: full logic injection into Demo cards • tidy providers & modularization
+├─ Design Toolkit (atoms/molecules + app shell)
+│ ├─ Status: 🚧 active (component library + layouts)
+│ ├─ Atoms: Text • Button • Icon • Avatar • Badge/BadgeText • Chip/ChipText • Input • Spinner • Checkbox • Divider
+│ ├─ Molecules: Card/* • ListItem • FormField • SearchBar • Toolbar • TabBar • BottomSheet • ProgressSection
+│ ├─ Overlays: OverlayContext + AlertHost + ToastHost (animated) + ModalHost (animated)
+│ ├─ Shell: Expo Router (tabs a/b), collapsible Sidebar (theme toggle, active state), ThemeProvider
+│ └─ Next: component docs • snapshot tests • refining sidebar interactions
+├─ Playplay (design system playground)
+│ ├─ Status: 🧭 paused/aux (tokens & primitives scaffolded)
+│ ├─ Stack: Expo RN, tokens/primitives/theme folders
+│ └─ Next: migrate stable components from Design Toolkit
+├─ ClaimIt (expense reimbursement w/ OCR)
+│ ├─ Status: 🧭 planned → early design
+│ ├─ Stack: Expo RN; OCR.space API; Google Drive API; Supabase (files/meta)
+│ ├─ Hooks: useOCR • useUpload
+│ └─ Next: refactor ClaimModal (4 options, validations, OCR pipeline, autofill to ClaimForm)
+├─ DAISY – Agent CSAT Performance
+│ ├─ Status: 🧭 planned
+│ ├─ Scope: real-time scores, analytics, feedback, goals, gamification
+│ └─ Next: define KPIs, dashboards, and data contracts
+├─ Reserve / Status Bots (mock ops tools)
+│ ├─ Status: 🚧 scaffolding
+│ ├─ UI: ReservePage/ReserveList/ReserveCard; data via useBots (mock)
+│ └─ Next: date selection in RoomList • MyBooking modularization
+├─ Interview Suite (LaiveRecruit/Configure/Applicant/Test/InterviewPage)
+│ ├─ Status: 🚧 active
+│ ├─ Updates: candidate analyzer config (strengths, roleFit roleScore 1–10), scoreBreakdown, costEstimation, transcript/summary
+│ └─ Next: end-to-end flow + result modal polish
+├─ CMS & Withdrawal Tools (enterprise)
+│ ├─ Status: 🧭 ongoing maintenance
+│ ├─ Stack: PHP, MySQL, Laserfiche integration; Spring Boot services (uploads/jobs)
+│ └─ Next: specific controllers & QA hardening
+├─ QA & Perf Tooling
+│ ├─ Status: ✅ in use
+│ ├─ Tools: Selenium + PyTest + Allure (UI) • Locust (load) • Postman collections
+│ └─ Next: add perf baselines for leave APIs & Realtime flows
+├─ TrackLah (personal task dashboard)
+│ ├─ Status: 🧭 new (PRD drafted)
+│ ├─ MVP: Task CRUD • tags/projects • list+kanban • on-time%, done, overdue
+│ ├─ Stack: React+TS, Tailwind, TanStack Query; BE Supabase or local SQLite
+│ └─ Next: schema + seed • task row/card • dashboard KPIs
+└─ Personal Apps (ideation/prototypes)
+├─ Reso Journal • Glass Journal • Monee (expense)
+└─ Status: 🧭 on hold (design tokens & patterns will feed these later)
